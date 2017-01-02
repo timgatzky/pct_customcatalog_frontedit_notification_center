@@ -1,0 +1,45 @@
+{
+	"name":"timgatzky/pct_autogrid",
+	"description":"Contao CustomCatalog Frontedit extension for Notification Center",
+	"keywords":["contao","themes","grid"],
+	"type":"contao-module",
+	"homepage":"https://github.com/timgatzky/pct_customcatalog_frontedit_notification_center",
+	"license":"MIT",
+	"authors":
+	[
+		{
+			"name":"Tim Gatzky",
+			"homepage":"http://www.tim-gatzky.de",
+			"role":"Interaction-Designer,Developer"
+		}
+	],
+	"support":
+	{
+		"issues":"https://github.com/timgatzky/pct_customcatalog_frontedit_notification_center/issues",
+		"source":"https://github.com/timgatzky/pct_customcatalog_frontedit_notification_center"
+	},
+	"require":
+	{
+		"php":">=5.6",
+		"contao/core":">=3.5",
+		"timgatzky/pct_customelements_plugin_cc_frontedit",
+		"terminal42/contao-notification_center",
+		"contao-community-alliance/composer-installer":"*",
+	},
+	"autoload":
+	{
+	},
+	"replace":
+	{
+	},
+	"extra":
+	{
+		"contao":
+		{
+			"sources":
+			{
+				"":"system/modules/pct_customcatalog_frontedit_notification_center"
+			}
+		}
+	}
+}
