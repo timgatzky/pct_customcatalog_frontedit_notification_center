@@ -40,7 +40,6 @@ class Notifications extends \Controller
 		
 		$strTable = \Input::get('table');
 		
-		// check if user sends a cc frontedit related formular
 		$objCC = \CustomCatalog::findByTableName( $strTable );
 		if($objCC === null)
 		{
@@ -111,7 +110,7 @@ class Notifications extends \Controller
 			    // new value from POST
 			    if(isset($_POST[$strFieldName]))
 			    {
-				    $value = $_POST[$strFieldName];
+				    $value = \Input::post($strFieldName);
 			    }
 			    
 			    $arrTokens['customcatalog_entry_' . $strFieldName] = $value;
