@@ -18,11 +18,6 @@
 $GLOBALS['TL_HOOKS']['getPageLayout'][] = array('NotificationCenter\CustomCatalog\FrontEdit\Notifications','run');
 
 /**
- * Notification center gateway
- */
-#$GLOBALS['NOTIFICATION_CENTER']['GATEWAY']['pct_customcatalog_frontedit'] = 'FormPDF\NotificationCenterGateway';
-
-/**
  * Notification center notification types
  */
 $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['pct_customcatalog_frontedit'] = array
@@ -64,3 +59,4 @@ $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['pct_customcatalog_frontedi
         'email_replyTo'        => array('admin_email', 'member_*', 'customcatalog_entry_*' ),
     ),
 );
+

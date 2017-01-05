@@ -65,7 +65,7 @@ class Notifications extends \Controller
 			$strAction = 'delete';
 		}
 		
-		// save, save and close
+		// check if user triggers an action
 		if (strlen($strAction) > 0)
 		{
 			$objNotifications = null;
