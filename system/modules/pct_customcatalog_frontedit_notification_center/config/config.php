@@ -27,8 +27,19 @@ $GLOBALS['TL_HOOKS']['getPageLayout'][] = array('NotificationCenter\CustomCatalo
  */
 $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['pct_customcatalog_frontedit'] = array
 (
-	// entry has been saved
 	'cc_feedit_onsave' => array
+	(
+        'recipients'           => array('member_email', 'admin_email','customcatalog_entry_*'),
+        'email_subject'        => array('domain', 'link', 'table', 'member_*', 'admin_email', 'customcatalog_entry_*'),
+        'email_text'           => array('domain', 'link', 'table', 'member_*', 'admin_email', 'customcatalog_entry_*'),
+        'email_html'           => array('domain', 'link', 'table', 'member_*', 'admin_email', 'customcatalog_entry_*'),
+        'email_sender_name'    => array('admin_email', 'member_*', 'customcatalog_entry_*'),
+        'email_sender_address' => array('admin_email', 'member_*', 'customcatalog_entry_*' ),
+        'email_recipient_cc'   => array('admin_email', 'member_*', 'customcatalog_entry_*' ),
+        'email_recipient_bcc'  => array('admin_email', 'member_*', 'customcatalog_entry_*' ),
+        'email_replyTo'        => array('admin_email', 'member_*', 'customcatalog_entry_*' ),
+    ),
+    'cc_feedit_oncreate' => array
 	(
         'recipients'           => array('member_email', 'admin_email','customcatalog_entry_*'),
         'email_subject'        => array('domain', 'link', 'table', 'member_*', 'admin_email', 'customcatalog_entry_*'),

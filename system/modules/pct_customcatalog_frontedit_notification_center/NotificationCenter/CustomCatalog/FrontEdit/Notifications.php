@@ -26,16 +26,19 @@ namespace NotificationCenter\CustomCatalog\FrontEdit;
 class Notifications extends \Controller
 {
 	/**
+	 * Send notfications by customcatalog edit user actions
+	 * @param object
 	 * 
+	 * called from getPageLayout Hook
 	 */
 	public function run($objPage)
 	{
-		if(\Input::post('FORM_SUBMIT') != \Input::post('table').'_'.\Input::post('mod') || \Input::post('table') == '')
+		if(\Input::get('table') == '' || \Input::get('act') == '')
 		{
 			return;
 		}
 		
-		$strTable = \Input::post('table');
+		$strTable = \Input::get('table');
 		
 		// check if user sends a cc frontedit related formular
 		$objCC = \CustomCatalog::findByTableName( $strTable );
@@ -48,12 +51,42 @@ class Notifications extends \Controller
 		$strLanguage = $objMultilanguage->getActiveFrontendLanguage();
 		
 		$objEntry = $objCC->findPublishedItemByIdOrAlias(\Input::get($GLOBALS['PCT_CUSTOMCATALOG']['urlItemsParameter']),$strLanguage);
-
-		// save, save and close
-		if (\Input::post('save') != '' || \Input::post('saveNclose') != '')
+		if($objEntry->id < 1 || !isset($objEntry->id))
 		{
-			// find notifications
-			$objNotifications = \NotificationCenter\Model\Notification::findBy('type','cc_feedit_onsave');
+			return;
+		}
+		
+		$strAction = '';
+		if(\Input::post('save') != '' || \Input::post('saveNclose') != '')
+		{
+			$strAction = 'save';
+		}
+		else if(\Input::get('act') == 'delete')
+		{
+			$strAction = 'delete';
+		}
+		
+		// save, save and close
+		if (strlen($strAction) > 0)
+		{
+			$objNotifications = null;
+			
+			// oncreate notifications
+			if($strAction == 'save' && $objEntry->tstamp < 1)
+			{
+				$objNotifications = \NotificationCenter\Model\Notification::findBy('type','cc_feedit_oncreate');
+			}
+			// onsave notifications
+			else if($strAction == 'save' && $objEntry->tstamp > 0)
+			{
+				$objNotifications = \NotificationCenter\Model\Notification::findBy('type','cc_feedit_onsave');
+			}
+			// ondelete notifications
+			else if($strAction == 'delete')
+			{
+				$objNotifications = \NotificationCenter\Model\Notification::findBy('type','cc_feedit_ondelete');
+			}
+			
 			if($objNotifications === null)
 			{
 				return;
@@ -70,10 +103,8 @@ class Notifications extends \Controller
 			$arrTokens['table'] = $strTable;
 			
 			// cc entry tokens  
-			$arrData = $objEntry->row();
-			
 			$arrFormatted = array();
-			foreach ($arrData as $strFieldName => $strFieldValue) 
+			foreach($objEntry->row() as $strFieldName => $strFieldValue) 
 			{
 				$value = \Haste\Util\Format::dcaValue('tl_'.$strTable, $strFieldName, $strFieldValue);
 			    
@@ -94,7 +125,7 @@ class Notifications extends \Controller
 			if($objMemberModel !== null)
 			{
 				$arrFormatted = array();
-				foreach ($objMemberModel->row() as $strFieldName => $strFieldValue) 
+				foreach($objMemberModel->row() as $strFieldName => $strFieldValue) 
 				{
 					$value = \Haste\Util\Format::dcaValue('tl_member', $strFieldName, $strFieldValue);
 				    $arrTokens['member_' . $strFieldName] = $value;
@@ -110,4 +141,5 @@ class Notifications extends \Controller
 			}
 		}
 	}
+
 }
