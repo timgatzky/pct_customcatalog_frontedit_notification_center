@@ -20,14 +20,17 @@ $GLOBALS['TL_HOOKS']['getPageLayout'][] = array('NotificationCenter\CustomCatalo
 /**
  * Notification center notification types
  */
+$arrTokens1 = array('domain', 'link', 'table','backend_listview','backend_link', 'member_*', 'admin_email', 'customcatalog_entry_*');
+
+// Register tokens
 $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['pct_customcatalog_frontedit'] = array
 (
 	'cc_feedit_onsave' => array
 	(
         'recipients'           => array('member_email', 'admin_email','customcatalog_entry_*'),
-        'email_subject'        => array('domain', 'link', 'table', 'member_*', 'admin_email', 'customcatalog_entry_*'),
-        'email_text'           => array('domain', 'link', 'table', 'member_*', 'admin_email', 'customcatalog_entry_*'),
-        'email_html'           => array('domain', 'link', 'table', 'member_*', 'admin_email', 'customcatalog_entry_*'),
+        'email_subject'        => $arrTokens1,
+        'email_text'           => $arrTokens1,
+        'email_html'           => $arrTokens1,
         'email_sender_name'    => array('admin_email', 'member_*', 'customcatalog_entry_*'),
         'email_sender_address' => array('admin_email', 'member_*', 'customcatalog_entry_*' ),
         'email_recipient_cc'   => array('admin_email', 'member_*', 'customcatalog_entry_*' ),
@@ -37,9 +40,9 @@ $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['pct_customcatalog_frontedi
     'cc_feedit_oncreate' => array
 	(
         'recipients'           => array('member_email', 'admin_email','customcatalog_entry_*'),
-        'email_subject'        => array('domain', 'link', 'table', 'member_*', 'admin_email', 'customcatalog_entry_*'),
-        'email_text'           => array('domain', 'link', 'table', 'member_*', 'admin_email', 'customcatalog_entry_*'),
-        'email_html'           => array('domain', 'link', 'table', 'member_*', 'admin_email', 'customcatalog_entry_*'),
+        'email_subject'        => $arrTokens1,
+        'email_text'           => $arrTokens1,
+        'email_html'           => $arrTokens1,
         'email_sender_name'    => array('admin_email', 'member_*', 'customcatalog_entry_*'),
         'email_sender_address' => array('admin_email', 'member_*', 'customcatalog_entry_*' ),
         'email_recipient_cc'   => array('admin_email', 'member_*', 'customcatalog_entry_*' ),
@@ -49,9 +52,9 @@ $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['pct_customcatalog_frontedi
     'cc_feedit_ondelete' => array
 	(
         'recipients'           => array('member_email', 'admin_email','customcatalog_entry_*'),
-        'email_subject'        => array('domain', 'link', 'table', 'member_*', 'admin_email', 'customcatalog_entry_*'),
-        'email_text'           => array('domain', 'link', 'table', 'member_*', 'admin_email', 'customcatalog_entry_*'),
-        'email_html'           => array('domain', 'link', 'table', 'member_*', 'admin_email', 'customcatalog_entry_*'),
+        'email_subject'        => $arrTokens1,
+        'email_text'           => $arrTokens1,
+        'email_html'           => $arrTokens1,
         'email_sender_name'    => array('admin_email', 'member_*', 'customcatalog_entry_*'),
         'email_sender_address' => array('admin_email', 'member_*', 'customcatalog_entry_*' ),
         'email_recipient_cc'   => array('admin_email', 'member_*', 'customcatalog_entry_*' ),

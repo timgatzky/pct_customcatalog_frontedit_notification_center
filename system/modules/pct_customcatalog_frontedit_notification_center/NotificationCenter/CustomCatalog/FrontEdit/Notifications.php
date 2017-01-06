@@ -46,6 +46,23 @@ class Notifications extends \Controller
 			return;
 		}
 		
+		$objSystemIntegration = new \PCT\CustomElements\Plugins\CustomCatalog\Core\SystemIntegration;
+		
+		$strAlias = '';
+		// available from CC 2.2.0
+		if(method_exists($objSystemIntegration, 'getBackendModuleAlias'))
+		{
+			$strAlias = $objSystemIntegration->getBackendModuleAlias($objCC->id);
+		}
+		else
+		{
+			$objCE = \PCT\CustomElements\Core\CustomElementFactory::findById($objCC->pid);
+			if($objCE !== null)
+			{
+				$strAlias = sprintf($GLOBALS['PCT_CUSTOMCATALOG']['backendUrlLogic'],$objCE->get('alias'),$objCC->get('id'));
+			}
+		}
+		
 		$objMultilanguage = new \PCT\CustomElements\Plugins\CustomCatalog\Core\Multilanguage;
 		$strLanguage = $objMultilanguage->getActiveFrontendLanguage();
 		
@@ -100,6 +117,12 @@ class Notifications extends \Controller
 			
 			// cc tokens
 			$arrTokens['table'] = $strTable;
+			
+			// backend link to table
+			$arrTokens['backend_listview'] = ampersand(\Environment::get('base') . 'contao/main.php?do='.$strAlias);
+			
+			// backend link to entry
+			$arrTokens['backend_link'] = ampersand(\Environment::get('base'). 'contao/main.php?'.http_build_query(array('do'=>$strAlias,'act'=>'edit','id'=>$objEntry->id,'rt'=>REQUEST_TOKEN,'table'=>$strTable),'','&amp;'));
 			
 			// cc entry tokens  
 			$arrFormatted = array();
