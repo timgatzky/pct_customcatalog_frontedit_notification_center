@@ -40,15 +40,28 @@ class Notifications extends \Controller
 		
 		$strTable = \Input::get('table');
 		
+		// @var object CustomCatalog
 		$objCC = \CustomCatalog::findByTableName( $strTable );
 		if($objCC === null)
 		{
 			return;
 		}
 		
-		$objSystemIntegration = new \PCT\CustomElements\Plugins\CustomCatalog\Core\SystemIntegration;
+		$objMultilanguage = new \PCT\CustomElements\Plugins\CustomCatalog\Core\Multilanguage;
+		$strLanguage = $objMultilanguage->getActiveFrontendLanguage();
+		
+		// @var object DatabaseResult
+		$objEntry = $objCC->findPublishedItemByIdOrAlias(\Input::get($GLOBALS['PCT_CUSTOMCATALOG']['urlItemsParameter']),$strLanguage);
+		if($objEntry->id < 1 || !isset($objEntry->id))
+		{
+			return;
+		}
 		
 		$strAlias = '';
+		
+		// @var object SystemIntegration 
+		$objSystemIntegration = new \PCT\CustomElements\Plugins\CustomCatalog\Core\SystemIntegration;
+		
 		// available from CC 2.2.0
 		if(method_exists($objSystemIntegration, 'getBackendModuleAlias'))
 		{
@@ -61,15 +74,6 @@ class Notifications extends \Controller
 			{
 				$strAlias = sprintf($GLOBALS['PCT_CUSTOMCATALOG']['backendUrlLogic'],$objCE->get('alias'),$objCC->get('id'));
 			}
-		}
-		
-		$objMultilanguage = new \PCT\CustomElements\Plugins\CustomCatalog\Core\Multilanguage;
-		$strLanguage = $objMultilanguage->getActiveFrontendLanguage();
-		
-		$objEntry = $objCC->findPublishedItemByIdOrAlias(\Input::get($GLOBALS['PCT_CUSTOMCATALOG']['urlItemsParameter']),$strLanguage);
-		if($objEntry->id < 1 || !isset($objEntry->id))
-		{
-			return;
 		}
 		
 		$strAction = '';
