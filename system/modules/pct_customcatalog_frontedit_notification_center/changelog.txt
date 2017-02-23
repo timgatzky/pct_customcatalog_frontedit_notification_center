@@ -1,2 +1,6 @@
+### 1.0.1
+Change: Cannot use the * star character anymore as a ALL placeholder
+Update: Translation files
+
 ### 1.0.0
 Initial commit
