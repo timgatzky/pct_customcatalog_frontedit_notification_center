@@ -15,6 +15,6 @@
 
 
 $GLOBALS['TL_LANG']['tl_nc_notification']['type']['pct_customcatalog_frontedit']  		= 'CustomCatalog Frontedit';
-$GLOBALS['TL_LANG']['tl_nc_notification']['type']['cc_feedit_onsave'][0]  				= 'Bei Speicherung';
-$GLOBALS['TL_LANG']['tl_nc_notification']['type']['cc_feedit_ondelete'][0] 				= 'Bei Löschung';
-$GLOBALS['TL_LANG']['tl_nc_notification']['type']['cc_feedit_oncreate'][0] 				= 'Bei Erstellung (Erst-Speicherung)';
+$GLOBALS['TL_LANG']['tl_nc_notification']['type']['cc_feedit_onsave'][0]  				= 'On save';
+$GLOBALS['TL_LANG']['tl_nc_notification']['type']['cc_feedit_ondelete'][0] 				= 'On delete';
+$GLOBALS['TL_LANG']['tl_nc_notification']['type']['cc_feedit_oncreate'][0] 				= 'On create (first save)';
