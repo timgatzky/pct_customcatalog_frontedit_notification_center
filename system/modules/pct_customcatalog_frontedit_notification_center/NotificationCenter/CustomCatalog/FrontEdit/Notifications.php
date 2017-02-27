@@ -143,7 +143,7 @@ class Notifications extends \Controller
 			    $arrTokens['customcatalog_entry_' . $strFieldName] = $value;
 			    $arrFormatted[] = $strFieldName.': '.$value;
 			}
-			$arrTokens['customcatalog_entry_?'] = implode("\n",$arrFormatted);
+			$arrTokens['customcatalog_entry'] = implode("\n",$arrFormatted);
 			
 			// member tokens
 			$objUser = \FrontendUser::getInstance();
@@ -157,7 +157,7 @@ class Notifications extends \Controller
 				    $arrTokens['member_' . $strFieldName] = $value;
 				    $arrFormatted[] = $strFieldName.': '.$value;
 				}
-				$arrTokens['member_?'] = implode("\n",$arrFormatted);
+				$arrTokens['member'] = implode("\n",$arrFormatted);
 			}
 			
 			// send notifications
