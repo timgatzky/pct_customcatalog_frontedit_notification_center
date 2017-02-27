@@ -1,3 +1,6 @@
+### 1.2.0
+Change: Use no placeholder character to output all fields e.g. ##customcatalog_entry##
+
 ### 1.1.0
 Change: Cannot use the * star character anymore as a ALL placeholder
 Update: Translation files
