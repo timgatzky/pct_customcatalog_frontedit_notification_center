@@ -23,4 +23,5 @@ The extension brings new notification types for CustomCatalog FrontEdit:
 Available CustomCatalog related tokens:
 * ##backend_link### (Backend link to the entry)
 * ##backend_listview## (Backend link to the table listview)
-* ##customcatalog_entry## (Any field value of the current entry)
+* ##customcatalog_entry_*## (Replace * placeholder with field name for the value of the current entry)
+* ##customcatalog_entry## (All field values of the current entry with linebreaks)
