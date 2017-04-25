@@ -4,6 +4,7 @@ PCT CustomCatalog Frontedit Notification Center
 About
 -----
 Notification Center gateway extension to send CustomCatalog Frontedit related information.
+This extension has been funded by [Frank Schmidt EDV-Dienstleistungen](https://www.fs-edv.com) and [ES Konzepte](http://www.es-konzepte.de/)
 
 Installation
 ------------
