@@ -1,3 +1,6 @@
+### 1.2.1
+Fixed: Missing ##member##, ##customcatalog_entry## definition in config
+
 ### 1.2.0
 Change: Use no placeholder character to output all fields e.g. ##customcatalog_entry##
 
