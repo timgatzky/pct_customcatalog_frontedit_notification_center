@@ -20,7 +20,7 @@ $GLOBALS['TL_HOOKS']['getPageLayout'][] = array('NotificationCenter\CustomCatalo
 /**
  * Notification center notification types
  */
-$arrTokens1 = array('domain', 'link', 'table','backend_listview','backend_link', 'member_*', 'admin_email', 'customcatalog_entry_*');
+$arrTokens1 = array('domain', 'link', 'table','backend_listview','backend_link','member', 'member_*', 'admin_email','customcatalog_entry', 'customcatalog_entry_*');
 
 // Register tokens
 $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['pct_customcatalog_frontedit'] = array
