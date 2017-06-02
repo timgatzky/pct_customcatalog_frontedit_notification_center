@@ -196,8 +196,20 @@ class Notifications extends \Controller
 				    continue;
 			    }
 			    
-			    $arrTokens['customcatalog_entry_' . $strFieldName] = $value;
-			    $arrFormatted[] = $strFieldName.': '.$value;
+			    // HOOK here to modify the output value
+			    if (is_array($GLOBALS['CUSTOMCATALOG_FRONTEDIT_HOOKS']['notificationValue']) && count($GLOBALS['CUSTOMCATALOG_FRONTEDIT_HOOKS']) > 0)
+			    {
+			    	foreach($GLOBALS['CUSTOMCATALOG_FRONTEDIT_HOOKS']['notificationValue'] as $callback)
+			    	{
+			    		$value = \System::importStatic($callback[0])->{$callback[1]}($varValue,$objEntry,$this);
+			    	}
+			    }
+			    
+			    if($value !== null)
+			    {
+			        $arrTokens['customcatalog_entry_' . $strFieldName] = $value;
+				    $arrFormatted[] = $strFieldName.': '.$value;
+			    }
 			}
 			$arrTokens['customcatalog_entry'] = implode("\n",$arrFormatted);
 			
