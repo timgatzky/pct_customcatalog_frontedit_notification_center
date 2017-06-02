@@ -57,6 +57,9 @@ class Notifications extends \Controller
 			return;
 		}
 		
+		// @var object ModuleModel
+		$objModule = \ModuleModel::findByPk(\Input::post('mod'));
+		
 		$strAlias = '';
 		
 		// @var object SystemIntegration 
@@ -89,29 +92,34 @@ class Notifications extends \Controller
 		// check if user triggers an action
 		if (strlen($strAction) > 0)
 		{
-			$objNotifications = null;
+			$objNotification = \NotificationCenter\Model\Notification::findByPk( $objModule->customcatalog_edit_notification );
 			
 			// oncreate notifications
-			if($strAction == 'save' && $objEntry->tstamp < 1)
+			if($strAction == 'save' && $objEntry->tstamp < 1 && $objNotification->type == 'cc_feedit_oncreate')
 			{
-				$objNotifications = \NotificationCenter\Model\Notification::findBy('type','cc_feedit_oncreate');
+				// all good
 			}
-			// onsave notifications
-			else if($strAction == 'save' && $objEntry->tstamp > 0)
+			// onsave, onchange notifications
+			else if($strAction == 'save' && $objEntry->tstamp > 0 && in_array( $objNotification->type, array('cc_feedit_onsave','cc_feedit_onchange') ))
 			{
-				$objNotifications = \NotificationCenter\Model\Notification::findBy('type','cc_feedit_onsave');
+				// all good
 			}
 			// ondelete notifications
-			else if($strAction == 'delete')
+			else if($strAction == 'delete' && $objNotification->type == 'cc_feedit_ondelete')
 			{
-				$objNotifications = \NotificationCenter\Model\Notification::findBy('type','cc_feedit_ondelete');
+				// all good
+			}
+			else
+			{
+				// unknown notification
 			}
 			
-			if($objNotifications === null)
+			if($objNotification === null)
 			{
 				return;
 			}
 			
+			$blnDoNotSubmit = false;
 			$arrTokens = array();
 			$strLanguage = $GLOBALS['TL_LANGUAGE'];
 		
@@ -130,6 +138,14 @@ class Notifications extends \Controller
 			
 			// cc entry tokens  
 			$arrFormatted = array();
+			
+			// onchange notification
+			$arrOnChange = array();
+			if($objNotification->type == 'cc_feedit_onchange' && !empty($objModule->customcatalog_edit_notification_attributes))
+			{
+				$arrOnChange = deserialize($objModule->customcatalog_edit_notification_attributes);
+			}
+			
 			foreach($objEntry->row() as $strFieldName => $strFieldValue) 
 			{
 				$value = \Haste\Util\Format::dcaValue('tl_'.$strTable, $strFieldName, $strFieldValue);
@@ -138,6 +154,26 @@ class Notifications extends \Controller
 			    if(isset($_POST[$strFieldName]))
 			    {
 				    $value = \Input::post($strFieldName);
+			    }
+			    
+			     // onchange notification
+			    if($objNotification->type == 'cc_feedit_onchange' && in_array($strFieldName, $arrOnChange) && count($arrOnChange) > 0)
+			    {
+				  	// did the value change?
+				  	$_post = \Input::postRaw($strFieldName);
+				  	$_value = $objEntry->{$strFieldName};
+				  	
+				  	// skip attributes that did not change
+				  	if($_post == $_value)
+				  	{
+					  	unset($arrOnChange[ array_search($strFieldName,$arrOnChange) ]);
+					  	continue;
+					}
+				}
+				// skip unselected attributes
+				else if($objNotification->type == 'cc_feedit_onchange' && !in_array($strFieldName, $arrOnChange) && count($arrOnChange) > 0)
+			    {
+				    continue;
 			    }
 			    
 			    $arrTokens['customcatalog_entry_' . $strFieldName] = $value;
@@ -160,8 +196,14 @@ class Notifications extends \Controller
 				$arrTokens['member'] = implode("\n",$arrFormatted);
 			}
 			
-			// send notifications
-			foreach($objNotifications as $objNotification)
+			// do not submit if nothing has changed
+			if($objNotification->type == 'cc_feedit_onchange' && count($arrOnChange) < 1)
+			{
+				$blnDoNotSubmit = true;
+			}
+			
+			// send notification
+			if($blnDoNotSubmit === false)
 			{
 				$objNotification->send($arrTokens,$strLanguage);
 			}
