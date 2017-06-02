@@ -187,11 +187,15 @@ class Notifications extends \Controller
 				  	if($_post == $_value)
 				  	{
 					  	unset($arrOnChange[ array_search($strFieldName,$arrOnChange) ]);
-					  	continue;
+					  	
+					  	if($GLOBALS['PCT_CUSTOMCATALOG_FRONTEDIT_NOTIFICATION_CENTER']['onChangeShowOnlyNewValues'] === true)
+					  	{
+					  		continue;
+					  	}
 					}
 				}
 				// skip unselected attributes
-				else if($objNotification->type == 'cc_feedit_onchange' && !in_array($strFieldName, $arrOnChange) && count($arrOnChange) > 0)
+				else if($objNotification->type == 'cc_feedit_onchange' && !in_array($strFieldName, $arrOnChange) && count($arrOnChange) > 0 && $GLOBALS['PCT_CUSTOMCATALOG_FRONTEDIT_NOTIFICATION_CENTER']['onChangeShowOnlyNewValues'] === true)
 			    {
 				    continue;
 			    }

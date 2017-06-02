@@ -7,7 +7,7 @@
  * 
  * @copyright	Tim Gatzky 2017
  * @author		Tim Gatzky <info@tim-gatzky.de>
- * @package		form_pdf_notification_center
+ * @package		pct_customcatalog_frontedit_notification_center
  * @link		http://contao.org
  * @license		http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
@@ -16,6 +16,11 @@
  * Hooks
  */
 $GLOBALS['TL_HOOKS']['getPageLayout'][] = array('NotificationCenter\CustomCatalog\FrontEdit\Notifications','run');
+
+/**
+ * Globals
+ */
+$GLOBALS['PCT_CUSTOMCATALOG_FRONTEDIT_NOTIFICATION_CENTER']['onChangeShowOnlyNewValues'] = false;
 
 /**
  * Notification center notification types
