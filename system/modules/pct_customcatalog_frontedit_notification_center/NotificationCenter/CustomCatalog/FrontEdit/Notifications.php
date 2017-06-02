@@ -163,6 +163,26 @@ class Notifications extends \Controller
 				  	$_post = \Input::postRaw($strFieldName);
 				  	$_value = $objEntry->{$strFieldName};
 				  	
+				  	// binary image values
+				  	if(\Validator::isBinaryUuid($_value))
+				  	{
+						$_value = \StringUtil::binToUuid( \FilesModel::findByUuid($_value)->uuid );
+					}
+					// arrays
+					else if(is_array(deserialize($_value)))
+					{
+						$_value = deserialize($_value);
+						if(!is_array($_post))
+						{
+							$_post = explode(',', $_post);
+						}
+						
+						if(!array_diff($_value , $_post))
+						{
+							$_value = $_post = 1; // make them equal
+						}
+					}
+				  	
 				  	// skip attributes that did not change
 				  	if($_post == $_value)
 				  	{
