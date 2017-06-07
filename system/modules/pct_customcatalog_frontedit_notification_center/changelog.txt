@@ -1,3 +1,8 @@
+### 1.3.0
+New: "onchange" notification to send notifications only when field changed (#9)
+Added: Hook: $GLOBALS['CUSTOMCATALOG_FRONTEDIT_HOOKS']['notificationValue'] to manipulate the output value
+Update: Choose notifications and "onchange" attributes directly in CustomCatalog reader module (#8)
+
 ### 1.2.1
 Fixed: Missing ##member##, ##customcatalog_entry## definition in config
 

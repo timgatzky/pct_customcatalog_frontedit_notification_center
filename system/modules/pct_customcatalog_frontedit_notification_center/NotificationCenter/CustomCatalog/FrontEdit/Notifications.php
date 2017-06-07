@@ -57,6 +57,9 @@ class Notifications extends \Controller
 			return;
 		}
 		
+		// @var object ModuleModel
+		$objModule = \ModuleModel::findByPk(\Input::post('mod'));
+		
 		$strAlias = '';
 		
 		// @var object SystemIntegration 
@@ -89,29 +92,34 @@ class Notifications extends \Controller
 		// check if user triggers an action
 		if (strlen($strAction) > 0)
 		{
-			$objNotifications = null;
+			$objNotification = \NotificationCenter\Model\Notification::findByPk( $objModule->customcatalog_edit_notification );
 			
 			// oncreate notifications
-			if($strAction == 'save' && $objEntry->tstamp < 1)
+			if($strAction == 'save' && $objEntry->tstamp < 1 && $objNotification->type == 'cc_feedit_oncreate')
 			{
-				$objNotifications = \NotificationCenter\Model\Notification::findBy('type','cc_feedit_oncreate');
+				// all good
 			}
-			// onsave notifications
-			else if($strAction == 'save' && $objEntry->tstamp > 0)
+			// onsave, onchange notifications
+			else if($strAction == 'save' && $objEntry->tstamp > 0 && in_array( $objNotification->type, array('cc_feedit_onsave','cc_feedit_onchange') ))
 			{
-				$objNotifications = \NotificationCenter\Model\Notification::findBy('type','cc_feedit_onsave');
+				// all good
 			}
 			// ondelete notifications
-			else if($strAction == 'delete')
+			else if($strAction == 'delete' && $objNotification->type == 'cc_feedit_ondelete')
 			{
-				$objNotifications = \NotificationCenter\Model\Notification::findBy('type','cc_feedit_ondelete');
+				// all good
+			}
+			else
+			{
+				// unknown notification
 			}
 			
-			if($objNotifications === null)
+			if($objNotification === null)
 			{
 				return;
 			}
 			
+			$blnDoNotSubmit = false;
 			$arrTokens = array();
 			$strLanguage = $GLOBALS['TL_LANGUAGE'];
 		
@@ -130,6 +138,14 @@ class Notifications extends \Controller
 			
 			// cc entry tokens  
 			$arrFormatted = array();
+			
+			// onchange notification
+			$arrOnChange = array();
+			if($objNotification->type == 'cc_feedit_onchange' && !empty($objModule->customcatalog_edit_notification_attributes))
+			{
+				$arrOnChange = deserialize($objModule->customcatalog_edit_notification_attributes);
+			}
+			
 			foreach($objEntry->row() as $strFieldName => $strFieldValue) 
 			{
 				$value = \Haste\Util\Format::dcaValue('tl_'.$strTable, $strFieldName, $strFieldValue);
@@ -140,8 +156,64 @@ class Notifications extends \Controller
 				    $value = \Input::post($strFieldName);
 			    }
 			    
-			    $arrTokens['customcatalog_entry_' . $strFieldName] = $value;
-			    $arrFormatted[] = $strFieldName.': '.$value;
+			     // onchange notification
+			    if($objNotification->type == 'cc_feedit_onchange' && in_array($strFieldName, $arrOnChange) && count($arrOnChange) > 0)
+			    {
+				  	// did the value change?
+				  	$_post = \Input::postRaw($strFieldName);
+				  	$_value = $objEntry->{$strFieldName};
+				  	
+				  	// binary image values
+				  	if(\Validator::isBinaryUuid($_value))
+				  	{
+						$_value = \StringUtil::binToUuid( \FilesModel::findByUuid($_value)->uuid );
+					}
+					// arrays
+					else if(is_array(deserialize($_value)))
+					{
+						$_value = deserialize($_value);
+						if(!is_array($_post))
+						{
+							$_post = explode(',', $_post);
+						}
+						
+						if(!array_diff($_value , $_post))
+						{
+							$_value = $_post = 1; // make them equal
+						}
+					}
+				  	
+				  	// skip attributes that did not change
+				  	if($_post == $_value)
+				  	{
+					  	unset($arrOnChange[ array_search($strFieldName,$arrOnChange) ]);
+					  	
+					  	if($GLOBALS['PCT_CUSTOMCATALOG_FRONTEDIT_NOTIFICATION_CENTER']['onChangeShowOnlyNewValues'] === true)
+					  	{
+					  		continue;
+					  	}
+					}
+				}
+				// skip unselected attributes
+				else if($objNotification->type == 'cc_feedit_onchange' && !in_array($strFieldName, $arrOnChange) && count($arrOnChange) > 0 && $GLOBALS['PCT_CUSTOMCATALOG_FRONTEDIT_NOTIFICATION_CENTER']['onChangeShowOnlyNewValues'] === true)
+			    {
+				    continue;
+			    }
+			    
+			    // HOOK here to modify the output value
+			    if (is_array($GLOBALS['CUSTOMCATALOG_FRONTEDIT_HOOKS']['notificationValue']) && count($GLOBALS['CUSTOMCATALOG_FRONTEDIT_HOOKS']) > 0)
+			    {
+			    	foreach($GLOBALS['CUSTOMCATALOG_FRONTEDIT_HOOKS']['notificationValue'] as $callback)
+			    	{
+			    		$value = \System::importStatic($callback[0])->{$callback[1]}($varValue,$objEntry,$this);
+			    	}
+			    }
+			    
+			    if($value !== null)
+			    {
+			        $arrTokens['customcatalog_entry_' . $strFieldName] = $value;
+				    $arrFormatted[] = $strFieldName.': '.$value;
+			    }
 			}
 			$arrTokens['customcatalog_entry'] = implode("\n",$arrFormatted);
 			
@@ -160,8 +232,14 @@ class Notifications extends \Controller
 				$arrTokens['member'] = implode("\n",$arrFormatted);
 			}
 			
-			// send notifications
-			foreach($objNotifications as $objNotification)
+			// do not submit if nothing has changed
+			if($objNotification->type == 'cc_feedit_onchange' && count($arrOnChange) < 1)
+			{
+				$blnDoNotSubmit = true;
+			}
+			
+			// send notification
+			if($blnDoNotSubmit === false)
 			{
 				$objNotification->send($arrTokens,$strLanguage);
 			}
