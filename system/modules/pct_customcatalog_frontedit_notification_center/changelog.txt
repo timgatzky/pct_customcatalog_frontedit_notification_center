@@ -1,3 +1,6 @@
+### 1.4.0
+New: Send notifications from the backend (#12)
+
 ### 1.3.0
 New: "onchange" notification to send notifications only when field changed (#9)
 Added: Hook: $GLOBALS['CUSTOMCATALOG_FRONTEDIT_HOOKS']['notificationValue'] to manipulate the output value
