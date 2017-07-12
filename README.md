@@ -5,7 +5,7 @@ About
 -----
 Notification Center gateway extension to send CustomCatalog Frontedit related information.  
 This extension has been funded by [Frank Schmidt EDV-Dienstleistungen](https://www.fs-edv.com) and [ES Konzepte](http://www.es-konzepte.de/)   
-Version update 1.3 has been founded by [eBlick Medienberatung](http://www.e-blick.de/)
+Version update 1.3, 1.4 has been founded by [eBlick Medienberatung](http://www.e-blick.de/)
 
 Installation
 ------------
