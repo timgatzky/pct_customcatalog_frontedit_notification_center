@@ -35,7 +35,7 @@ class Notifications extends \Controller
 	{
 		// @var object CustomCatalog
 		$objCC = $objDbCC;
-		if($objCC === null)
+		if($objCC === null || !$objCC->customcatalog_edit_notification)
 		{
 			return;
 		}
