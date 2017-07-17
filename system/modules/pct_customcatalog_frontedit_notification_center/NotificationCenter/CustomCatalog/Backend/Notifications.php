@@ -123,6 +123,11 @@ class Notifications extends \Controller
 				$arrOnChange = deserialize($objModule->customcatalog_edit_notification_attributes);
 			}
 			
+			if($objNotification->type == 'cc_feedit_onchange' && $objSession->get($strHelperSession) !== null)
+		  	{
+			  	$objEntry = $objSession->get($strHelperSession);
+			}
+			
 			foreach($objEntry->row() as $strFieldName => $strFieldValue) 
 			{
 				$value = \Haste\Util\Format::dcaValue('tl_'.$strTable, $strFieldName, $strFieldValue);
@@ -139,13 +144,7 @@ class Notifications extends \Controller
 				  	// did the value change?
 				  	$_post = \Input::postRaw($strFieldName);
 				  	$_value = $objEntry->{$strFieldName};
-				  	
-				  	if($objSession->get($strHelperSession) !== null)
-				  	{
-					  	$_entry = $objSession->get($strHelperSession);
-					  	$_value = $_entry->{$strFieldName};
-					}
-				  	
+				  		
 				  	// binary image values
 				  	if(\Validator::isBinaryUuid($_value))
 				  	{
