@@ -42,8 +42,16 @@ class Notifications extends \Controller
 		
 		$objModule = $objCC;
 		$objEntry = $objDC->activeRecord;
+		$objSession = \Session::getInstance();
+		$strHelperSession = 'CC_ACTIVERECORD';
+		
+		if($strAction == 'onload' && $objSession->get($strHelperSession) === null)
+		{
+			$objSession->set($strHelperSession,$objEntry);
+			return;
+		}
 				
-		if($strAction == 'onsubmit')
+		if($strAction == 'onsubmit' || $strAction == 'oncreate')
 		{
 			$strAction = 'save';
 		}
@@ -55,6 +63,7 @@ class Notifications extends \Controller
 		{
 			$strAction = '';
 		}
+		
 		
 		// check if user triggers an action
 		if (strlen($strAction) > 0)
@@ -78,7 +87,8 @@ class Notifications extends \Controller
 			}
 			else
 			{
-				// unknown notification
+				// unknown notification or action does not fit
+				$objNotification = null;
 			}
 			
 			if($objNotification === null)
@@ -129,6 +139,12 @@ class Notifications extends \Controller
 				  	// did the value change?
 				  	$_post = \Input::postRaw($strFieldName);
 				  	$_value = $objEntry->{$strFieldName};
+				  	
+				  	if($objSession->get($strHelperSession) !== null)
+				  	{
+					  	$_entry = $objSession->get($strHelperSession);
+					  	$_value = $_entry->{$strFieldName};
+					}
 				  	
 				  	// binary image values
 				  	if(\Validator::isBinaryUuid($_value))
@@ -182,6 +198,7 @@ class Notifications extends \Controller
 				    $arrFormatted[] = $strFieldName.': '.$value;
 			    }
 			}
+			
 			$arrTokens['customcatalog_entry'] = implode("\n",$arrFormatted);
 			
 			// member tokens
@@ -203,6 +220,12 @@ class Notifications extends \Controller
 			if($objNotification->type == 'cc_feedit_onchange' && count($arrOnChange) < 1)
 			{
 				$blnDoNotSubmit = true;
+			}
+			
+			// remove the helper session
+			if($objNotification->type == 'cc_feedit_onchange')
+			{
+				$objSession->remove($strHelperSession);
 			}
 			
 			// send notification
