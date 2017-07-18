@@ -47,7 +47,7 @@ class Notifications extends \Controller
 		
 		if($strAction == 'onload' && $objSession->get($strHelperSession) === null)
 		{
-			$objSession->set($strHelperSession,$objEntry);
+			$objSession->set($strHelperSession, array('id'=> $objEntry->id, 'table'=> $objDC->table) );
 			return;
 		}
 				
@@ -125,7 +125,8 @@ class Notifications extends \Controller
 			
 			if($objNotification->type == 'cc_feedit_onchange' && $objSession->get($strHelperSession) !== null)
 		  	{
-			  	$objEntry = $objSession->get($strHelperSession);
+			  	$arr = $objSession->get($strHelperSession);
+			  	$objEntry = \Database::getInstance()->prepare("SELECT * FROM ".$arr['table']." WHERE id=?")->limit(1)->execute($arr['id']);
 			}
 			
 			foreach($objEntry->row() as $strFieldName => $strFieldValue) 
