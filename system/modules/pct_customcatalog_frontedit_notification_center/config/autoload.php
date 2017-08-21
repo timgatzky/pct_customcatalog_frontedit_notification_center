@@ -27,4 +27,5 @@ ClassLoader::addClasses(array
 (
 	'NotificationCenter\CustomCatalog\FrontEdit\Notifications' 			=> $path.'/NotificationCenter/CustomCatalog/FrontEdit/Notifications.php',
 	'NotificationCenter\CustomCatalog\Backend\TableNcNotification' 		=> $path.'/NotificationCenter/CustomCatalog/Backend/TableNcNotification.php',
+	'NotificationCenter\CustomCatalog\Backend\Notifications' 			=> $path.'/NotificationCenter/CustomCatalog/Backend/Notifications.php',
 ));

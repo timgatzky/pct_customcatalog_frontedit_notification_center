@@ -16,6 +16,7 @@
  * Hooks
  */
 $GLOBALS['TL_HOOKS']['getPageLayout'][] = array('NotificationCenter\CustomCatalog\FrontEdit\Notifications','run');
+$GLOBALS['CUSTOMCATALOG_HOOKS']['generalDataContainer'][] =array('NotificationCenter\CustomCatalog\Backend\Notifications','run');
 
 /**
  * Globals
